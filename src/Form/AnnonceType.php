@@ -6,6 +6,7 @@ use App\Entity\Annonce;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class AnnonceType extends AbstractType
 {
@@ -17,6 +18,12 @@ class AnnonceType extends AbstractType
             ->add('prix')
             ->add('categorie')
             ->add('coordonnee')
+            ->add('image', FileType::class,[
+                'label' => false,
+                'multiple' => true,
+                'mapped' => false,
+                'required' => false,
+            ])
         ;
     }
 

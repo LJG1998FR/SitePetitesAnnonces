@@ -16,7 +16,7 @@ class Image
     #[ORM\Column(length: 255)]
     private ?string $url = null;
 
-    #[ORM\ManyToOne(inversedBy: 'image')]
+    #[ORM\ManyToOne(inversedBy: 'image', cascade: ['remove'])]
     private ?Annonce $annonce = null;
 
     public function getId(): ?int
@@ -46,5 +46,9 @@ class Image
         $this->annonce = $annonce;
 
         return $this;
+    }
+
+    public function __toString(){
+        return $this->url;
     }
 }

@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Annonce;
+use App\Entity\Image;
 use App\Form\AnnonceType;
 use App\Repository\AnnonceRepository;
+use App\Repository\ImageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/annonce')]
 class AnnonceController extends AbstractController
@@ -22,7 +25,7 @@ class AnnonceController extends AbstractController
     }
 
     #[Route('/new', name: 'app_annonce_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, AnnonceRepository $annonceRepository): Response
+    public function new(Request $request, AnnonceRepository $annonceRepository, ImageRepository $imgRep, SluggerInterface $slugger): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $annonce = new Annonce();
@@ -30,6 +33,28 @@ class AnnonceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $pics = $form->get('image')->getData();
+            $annonce->setSlugger($slugger);
+            foreach($pics as $pic){
+                // On génère un nouveau nom de fichier
+                $fichier = $pic->getClientOriginalName();
+                $destination = $this->getParameter('kernel.project_dir').'/public/uploads/'.$annonce->getId().'-'.$annonce->getSlugger();
+                
+                // On copie le fichier dans le dossier uploads
+                $pic->move(
+                    $destination,
+                    $fichier
+                );
+                
+                // On crée l'image dans la base de données
+                $img = new Image();
+                $img->setUrl($fichier);
+                $annonce->addImage($img);
+                $imgRep->save($img, true);
+            }
+            if(isset($img)){     // on vérifie qu'il y a bien une image à persister en BDD
+                $img->setAnnonce($annonce);
+            }
             $annonce->setAuteur($this->getUser());
             $annonceRepository->save($annonce, true);
 
@@ -51,13 +76,32 @@ class AnnonceController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_annonce_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Annonce $annonce, AnnonceRepository $annonceRepository): Response
+    public function edit(Request $request, Annonce $annonce, AnnonceRepository $annonceRepository, ImageRepository $imgRep): Response
     {
         $this->denyAccessUnlessGranted('ANNONCE_EDIT', $annonce);
         $form = $this->createForm(AnnonceType::class, $annonce);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $pics = $form->get('image')->getData();
+            foreach($pics as $pic){
+                // On génère un nouveau nom de fichier
+                $fichier = $pic->getClientOriginalName();
+                $destination = $this->getParameter('kernel.project_dir').'/public/uploads/'.$annonce->getId().'-'.$annonce->getSlugger();
+                
+                // On copie le fichier dans le dossier uploads
+                $pic->move(
+                    $destination,
+                    $fichier
+                );
+                
+                // On crée l'image dans la base de données
+                $img = new Image();
+                $img->setUrl($fichier);
+                $annonce->addImage($img);
+                $imgRep->save($img, true);
+            }
+            $img->setAnnonce($annonce);
             $annonce->setDatedemaj(new \DateTime);
             $annonceRepository->save($annonce, true);
 
@@ -75,6 +119,13 @@ class AnnonceController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ANNONCE_DELETE', $annonce);
         if ($this->isCsrfTokenValid('delete'.$annonce->getId(), $request->request->get('_token'))) {
+            $images = $annonce->getImage();
+            $destination = $this->getParameter('kernel.project_dir').'/public/uploads/'.$annonce->getId().'-'.$annonce->getSlugger();
+            foreach ($images as $img) {
+                unlink($destination."/".$img->getUrl());
+                $img->setAnnonce(null);
+            }
+            rmdir($destination);
             $annonceRepository->remove($annonce, true);
         }
 

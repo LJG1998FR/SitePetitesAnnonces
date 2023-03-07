@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[ORM\Entity(repositoryClass: AnnonceRepository::class)]
 class Annonce
@@ -42,6 +43,9 @@ class Annonce
 
     #[ORM\ManyToOne(inversedBy: 'annonces')]
     private ?Coordonnee $coordonnee = null;
+
+    #[ORM\Column]
+    protected ?string $slugger = null;
 
     public function __construct()
     {
@@ -176,6 +180,18 @@ class Annonce
     public function setCoordonnee(?Coordonnee $coordonnee): self
     {
         $this->coordonnee = $coordonnee;
+
+        return $this;
+    }
+
+    public function getSlugger(): ?string
+    {
+        return $this->slugger;
+    }
+
+    public function setSlugger(SluggerInterface $slugger): self
+    {
+        $this->slugger = $slugger->slug(strtolower($this->getTitre()));
 
         return $this;
     }
