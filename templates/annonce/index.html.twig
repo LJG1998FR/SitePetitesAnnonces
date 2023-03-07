@@ -3,41 +3,30 @@
 {% block title %}Annonce index{% endblock %}
 
 {% block body %}
-    <h1>Annonce index</h1>
+    <h1>Annonces</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Titre</th>
-                <th>Description</th>
-                <th>Datedecreation</th>
-                <th>Datedemaj</th>
-                <th>Prix</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <main id="annonceContainer">
         {% for annonce in annonces %}
-            <tr>
-                <td>{{ annonce.id }}</td>
-                <td>{{ annonce.titre }}</td>
-                <td>{{ annonce.description }}</td>
-                <td>{{ annonce.datedecreation ? annonce.datedecreation|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ annonce.datedemaj ? annonce.datedemaj|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ annonce.prix }}</td>
-                <td>
-                    <a href="{{ path('app_annonce_show', {'id': annonce.id}) }}">show</a>
-                    <a href="{{ path('app_annonce_edit', {'id': annonce.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{{ path('app_annonce_show', {'id': annonce.id}) }}">{{ annonce.titre }}</a>
+                        {% if annonce.auteur == app.user %}
+                            <a class="card-link" href="{{ path('app_annonce_edit', {'id': annonce.id}) }}">
+                                <i class="bi bi-pen-fill"></i>
+                            </a>
+                            {{ include('annonce/_delete_form.html.twig') }}
+                        {% endif %}
+                    </h5>
+                    <p class="card-text">{{ annonce.prix }} Euros</p>
+                    <p class="card-text">Crée par: {{ annonce.auteur.pseudo }}</p>
+                    <p class="card-text">Publié le: {{ annonce.datedecreation ? annonce.datedecreation|date('d-m-Y à H:i:s') : '' }}</p>
+                    {% if annonce.datedemaj %}<p class="card-text">Modifié le: {{ annonce.datedemaj ? annonce.datedemaj|date('d-m-Y à H:i:s') : '' }}</p>{% endif %}
+                    <p class="card-text">Catégorie: {{ annonce.categorie }}</p>
+                </div>
+            </div>
         {% endfor %}
-        </tbody>
-    </table>
+    </main>
 
     <a href="{{ path('app_annonce_new') }}">Create new</a>
 {% endblock %}

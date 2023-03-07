@@ -87,4 +87,8 @@ class Coordonnee
 
         return $this;
     }
+
+    public function __toString(){
+        return $this->ville . ' - ' . $this->codepostal;
+    }
 }
