@@ -1,42 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Annonce{% endblock %}
+{% block title %}{{ annonce.titre }}{% endblock %}
 
 {% block body %}
-    <h1>Annonce</h1>
+    <h1>{{ annonce.titre }}</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ annonce.id }}</td>
-            </tr>
-            <tr>
-                <th>Titre</th>
-                <td>{{ annonce.titre }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ annonce.description }}</td>
-            </tr>
-            <tr>
-                <th>Datedecreation</th>
-                <td>{{ annonce.datedecreation ? annonce.datedecreation|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Datedemaj</th>
-                <td>{{ annonce.datedemaj ? annonce.datedemaj|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Prix</th>
-                <td>{{ annonce.prix }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <ul>
+        <li>Créée le: {{ annonce.datedecreation ? annonce.datedecreation|date('Y-m-d H:i:s') : '' }}</li>
+        <li>Dernière modification le: {{ annonce.datedemaj ? annonce.datedemaj|date('Y-m-d H:i:s') : '' }}</li>
+        <li>Prix: {{ annonce.prix}}</li>
+    </ul>
 
-    <a href="{{ path('app_annonce_index') }}">back to list</a>
-
-    <a href="{{ path('app_annonce_edit', {'id': annonce.id}) }}">edit</a>
+    <main>
+        {{ annonce.description }}
+    </main>
 
     {{ include('annonce/_delete_form.html.twig') }}
 {% endblock %}

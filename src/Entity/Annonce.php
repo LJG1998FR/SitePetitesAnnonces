@@ -46,6 +46,7 @@ class Annonce
     public function __construct()
     {
         $this->image = new ArrayCollection();
+        $this->datedecreation = new \DateTime;
     }
 
     public function getId(): ?int
