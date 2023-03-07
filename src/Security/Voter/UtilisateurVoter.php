@@ -6,17 +6,17 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class AnnonceVoter extends Voter
+class UtilisateurVoter extends Voter
 {
-    public const EDIT = 'ANNONCE_EDIT';
-    public const DELETE = 'ANNONCE_DELETE';
+    public const EDIT = 'UTILISATEUR_EDIT';
+    public const DELETE = 'UTILISATEUR_DELETE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, ['ANNONCE_EDIT', 'ANNONCE_DELETE'])
-            && $subject instanceof \App\Entity\Annonce;
+        return in_array($attribute, [self::EDIT, self::DELETE])
+            && $subject instanceof \App\Entity\Utilisateur;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -27,19 +27,15 @@ class AnnonceVoter extends Voter
             return false;
         }
 
-        if (in_array("ROLE_ADMIN",$user->getRoles())) {
-            return true;
-        }
-
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:
-                if ($user == $subject->getAuteur()) {
+                if ($user == $subject) {
                     return true;
                 }
                 break;
             case self::DELETE:
-                if ($user == $subject->getAuteur()) {
+                if ($user == $subject) {
                     return true;
                 }
                 break;
