@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AnnonceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -21,13 +23,30 @@ class Annonce
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $datedecreation = null;
+    private ?\DateTime $datedecreation = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $datedemaj = null;
+    private ?\DateTime $datedemaj = null;
 
     #[ORM\Column]
     private ?int $prix = null;
+
+    #[ORM\ManyToOne(inversedBy: 'annonces')]
+    private ?Categorie $categorie = null;
+
+    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Image::class)]
+    private Collection $image;
+
+    #[ORM\ManyToOne(inversedBy: 'annonces')]
+    private ?Utilisateur $auteur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'annonces')]
+    private ?Coordonnee $coordonnee = null;
+
+    public function __construct()
+    {
+        $this->image = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -58,24 +77,24 @@ class Annonce
         return $this;
     }
 
-    public function getDatedecreation(): ?\DateTimeInterface
+    public function getDatedecreation(): ?\DateTime
     {
         return $this->datedecreation;
     }
 
-    public function setDatedecreation(\DateTimeInterface $datedecreation): self
+    public function setDatedecreation(\DateTime $datedecreation): self
     {
         $this->datedecreation = $datedecreation;
 
         return $this;
     }
 
-    public function getDatedemaj(): ?\DateTimeInterface
+    public function getDatedemaj(): ?\DateTime
     {
         return $this->datedemaj;
     }
 
-    public function setDatedemaj(?\DateTimeInterface $datedemaj): self
+    public function setDatedemaj(?\DateTime $datedemaj): self
     {
         $this->datedemaj = $datedemaj;
 
@@ -90,6 +109,72 @@ class Annonce
     public function setPrix(int $prix): self
     {
         $this->prix = $prix;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?Categorie $categorie): self
+    {
+        $this->categorie = $categorie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImage(): Collection
+    {
+        return $this->image;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->image->contains($image)) {
+            $this->image->add($image);
+            $image->setAnnonce($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->image->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getAnnonce() === $this) {
+                $image->setAnnonce(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAuteur(): ?Utilisateur
+    {
+        return $this->auteur;
+    }
+
+    public function setAuteur(?Utilisateur $auteur): self
+    {
+        $this->auteur = $auteur;
+
+        return $this;
+    }
+
+    public function getCoordonnee(): ?Coordonnee
+    {
+        return $this->coordonnee;
+    }
+
+    public function setCoordonnee(?Coordonnee $coordonnee): self
+    {
+        $this->coordonnee = $coordonnee;
 
         return $this;
     }
