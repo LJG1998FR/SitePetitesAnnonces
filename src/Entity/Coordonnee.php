@@ -24,9 +24,13 @@ class Coordonnee
     #[ORM\OneToMany(mappedBy: 'coordonnee', targetEntity: Annonce::class)]
     private Collection $annonces;
 
+    #[ORM\OneToMany(mappedBy: 'coordonnees', targetEntity: Utilisateur::class)]
+    private Collection $utilisateurs;
+
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
+        $this->utilisateurs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,5 +94,35 @@ class Coordonnee
 
     public function __toString(){
         return $this->ville . ' - ' . $this->codepostal;
+    }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getUtilisateurs(): Collection
+    {
+        return $this->utilisateurs;
+    }
+
+    public function addUtilisateur(Utilisateur $utilisateur): self
+    {
+        if (!$this->utilisateurs->contains($utilisateur)) {
+            $this->utilisateurs->add($utilisateur);
+            $utilisateur->setCoordonnees($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUtilisateur(Utilisateur $utilisateur): self
+    {
+        if ($this->utilisateurs->removeElement($utilisateur)) {
+            // set the owning side to null (unless already changed)
+            if ($utilisateur->getCoordonnees() === $this) {
+                $utilisateur->setCoordonnees(null);
+            }
+        }
+
+        return $this;
     }
 }

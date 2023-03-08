@@ -15,20 +15,15 @@
     {% endfor %}
     <h1>Mon Compte</h1>
 
-    <h2>Modifier mon mot de passe</h2>
-    <div class="form">
-        <form method="post">
-            <div class="form-field">
-                <label for="pass">Nouveau mot de passe</label>
-                <input type="password" id="pass" name="pass" class="form-control">
-            </div>
-            <div class="form-field">
-                <label for="pass2">Confirmer nouveau mot de passe</label>
-                <input type="password" id="pass2" name="pass2" class="form-control">
-            </div>
-            <button class="btn btn-dark" style="margin-top:10px;">Enregistrer</button>
-        </form>
-    </div>
+    {{ form_start(form) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.plainPassword, {
+            label: 'Mot de passe'
+        }) }}
+        {{ form_row(form.pseudo) }}
+        {{ form_row(form.coordonnees) }}
 
-    <h2>Modifier mes coordonnées</h2>
+        <button type="submit" class="btn">Enregistrer</button>
+    {{ form_end(form) }}
+    </div>
 {% endblock %}

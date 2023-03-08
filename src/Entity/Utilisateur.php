@@ -41,6 +41,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Annonce::class)]
     private Collection $annonces;
 
+    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
+    private ?Coordonnee $coordonnees = null;
+
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
@@ -166,6 +169,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
                 $annonce->setAuteur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCoordonnees(): ?Coordonnee
+    {
+        return $this->coordonnees;
+    }
+
+    public function setCoordonnees(?Coordonnee $coordonnees): self
+    {
+        $this->coordonnees = $coordonnees;
 
         return $this;
     }
