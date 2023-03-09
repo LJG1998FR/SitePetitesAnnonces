@@ -1,0 +1,6 @@
+default:
+    save: Enregistrer
+annonce:
+    index: Liste des annonces
+    new: Créer une nouvelle annonce
+    back-to-list: Retourner à la liste des annonces

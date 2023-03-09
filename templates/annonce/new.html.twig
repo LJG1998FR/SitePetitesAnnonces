@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer Une Nouvelle Annonce{% endblock %}
+{% block title %}{{'annonce.new'|trans}}{% endblock %}
 
 {% block body %}
-    <h1>Créer Une Nouvelle Annonce</h1>
+    <h1>{{'annonce.new'|trans}}</h1>
 
     {{ include('annonce/_form.html.twig') }}
 
-    <a href="{{ path('app_annonce_index') }}">Retourner à la liste des annonces</a>
+    <a href="{{ path('app_annonce_index') }}">{{ 'annonce.back-to-list'|trans }}</a>
 {% endblock %}

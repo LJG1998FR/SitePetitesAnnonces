@@ -1,0 +1,6 @@
+default:
+    save: Save
+annonce:
+    index: Offer list
+    new: Create a new offer
+    back-to-list: Go back to the list of offers
