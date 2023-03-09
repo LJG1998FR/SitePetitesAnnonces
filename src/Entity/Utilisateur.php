@@ -44,9 +44,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     private ?Coordonnee $coordonnees = null;
 
+    #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Commentaire::class)]
+    private Collection $commentaires;
+
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -181,6 +185,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCoordonnees(?Coordonnee $coordonnees): self
     {
         $this->coordonnees = $coordonnees;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): self
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setAuteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): self
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getAuteur() === $this) {
+                $commentaire->setAuteur(null);
+            }
+        }
 
         return $this;
     }

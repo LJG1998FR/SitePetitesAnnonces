@@ -7,8 +7,8 @@
 
     <ul>
         <li>Créée le: {{ annonce.datedecreation ? annonce.datedecreation|date('Y-m-d H:i:s') : '' }}</li>
-        <li>Dernière modification le: {{ annonce.datedemaj ? annonce.datedemaj|date('Y-m-d H:i:s') : '' }}</li>
-        <li>Prix: {{ annonce.prix}}</li>
+        {% if annonce.datedemaj %}<li>Dernière modification le: {{ annonce.datedemaj ? annonce.datedemaj|date('Y-m-d H:i:s') : '' }}</li>{% endif %}
+        <li>Prix: {{ annonce.prix}} euros</li>
     </ul>
 
     <main>
@@ -17,6 +17,13 @@
             <img src="{{ asset('uploads/') }}{{annonce.id}}-{{annonce.slugger}}/{{ img }}">
         {% endfor %}
     </main>
+
+    {% for commentaire in commentaires %}
+        <span>{{ commentaire.contenu }}</span> - Envoyé par {{ commentaire.auteur.pseudo }} le {{ commentaire.datedecreation ? commentaire.datedecreation|date('d-m-Y à H:i:s') : '' }}
+    {% else %}
+        <span>Aucun commentaire</span>
+    {% endfor %}
+    <a href="{{ path('app_commentaire_new', {'annonce': annonce.id}) }}">Ajouter un commentaire</a>
 
     {{ include('annonce/_delete_form.html.twig') }}
 {% endblock %}

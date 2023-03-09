@@ -8,21 +8,32 @@ use Doctrine\Persistence\ObjectManager;
 class CoordonneeFixtures extends BaseFixture
 {
     private static $coordonnees = [
-        ['Lyon', '69000'],
-        ['Lyon 1', '69001'],
-        ['Lyon 2', '69002'],
-        ['Lyon 3', '69003'],
-        ['Lyon 4', '69004'],
-        ['Lyon 5', '69005'],
-        ['Lyon 6', '69006'],
-        ['Lyon 7', '69007'],
-        ['Lyon 8', '69008'],
-        ['Lyon 9', '69009']
+        ['Paris', '75056'],
+        ['Paris 1', '75101'],
+        ['Paris 2', '75102'],
+        ['Paris 3', '75103'],
+        ['Paris 4', '75104'],
+        ['Paris 5', '75105'],
+        ['Paris 6', '75106'],
+        ['Paris 7', '75107'],
+        ['Paris 8', '75108'],
+        ['Paris 9', '75109'],
+        ['Paris 10', '75110'],
+        ['Paris 11', '75111'],
+        ['Paris 12', '75112'],
+        ['Paris 13', '75113'],
+        ['Paris 14', '75114'],
+        ['Paris 15', '75115'],
+        ['Paris 16', '75116'],
+        ['Paris 17', '75117'],
+        ['Paris 18', '75118'],
+        ['Paris 19', '75119'],
+        ['Paris 20', '75120']
     ];
 
     public function loadData(ObjectManager $manager)
     {
-        $this->createMany(Coordonnee::class, 10, function(Coordonnee $coordonnee, $count) {
+        $this->createMany(Coordonnee::class, 21, function(Coordonnee $coordonnee, $count) {
             $coordonnee->setVille(self::$coordonnees[$count][0]);
             $coordonnee->setCodepostal(self::$coordonnees[$count][1]);
         });

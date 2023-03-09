@@ -6,6 +6,7 @@ use App\Entity\Annonce;
 use App\Entity\Image;
 use App\Form\AnnonceType;
 use App\Repository\AnnonceRepository;
+use App\Repository\CommentaireRepository;
 use App\Repository\ImageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,10 +69,11 @@ class AnnonceController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_annonce_show', methods: ['GET'])]
-    public function show(Annonce $annonce): Response
+    public function show(Annonce $annonce, CommentaireRepository $commRep): Response
     {
         return $this->render('annonce/show.html.twig', [
             'annonce' => $annonce,
+            'commentaires' => $commRep->findBy(['annonce' => $annonce->getId()]),
         ]);
     }
 

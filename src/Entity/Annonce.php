@@ -47,10 +47,14 @@ class Annonce
     #[ORM\Column]
     protected ?string $slugger = null;
 
+    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Commentaire::class)]
+    private Collection $commentaires;
+
     public function __construct()
     {
         $this->image = new ArrayCollection();
         $this->datedecreation = new \DateTime;
+        $this->commentaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -192,6 +196,36 @@ class Annonce
     public function setSlugger(SluggerInterface $slugger): self
     {
         $this->slugger = $slugger->slug(strtolower($this->getTitre()));
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): self
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setAnnonce($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): self
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getAnnonce() === $this) {
+                $commentaire->setAnnonce(null);
+            }
+        }
 
         return $this;
     }
