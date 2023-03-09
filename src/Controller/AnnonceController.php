@@ -13,15 +13,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/annonce')]
 class AnnonceController extends AbstractController
 {
     #[Route('/', name: 'app_annonce_index', methods: ['GET'])]
-    public function index(AnnonceRepository $annonceRepository): Response
+    public function index(Request $request, AnnonceRepository $annonceRepository, PaginatorInterface $paginator): Response
     {
+        $annonces = $paginator->paginate(
+            $annonceRepository->findBy([],['titre' => 'ASC']),
+            $request->query->getInt('page', 1),
+            10
+        );
         return $this->render('annonce/index.html.twig', [
-            'annonces' => $annonceRepository->findBy([],['titre' => 'ASC']),
+            'annonces' => $annonces,
         ]);
     }
 

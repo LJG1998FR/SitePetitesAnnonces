@@ -6,8 +6,8 @@
     <h1>{{ annonce.titre }}</h1>
 
     <ul>
-        <li>Créée le: {{ annonce.datedecreation ? annonce.datedecreation|date('Y-m-d H:i:s') : '' }}</li>
-        {% if annonce.datedemaj %}<li>Dernière modification le: {{ annonce.datedemaj ? annonce.datedemaj|date('Y-m-d H:i:s') : '' }}</li>{% endif %}
+        <li>Créée le: {{ annonce.datedecreation ? annonce.datedecreation|date('d-m-Y à H:i:s') : '' }}</li>
+        {% if annonce.datedemaj %}<li>Dernière modification le: {{ annonce.datedemaj ? annonce.datedemaj|date('d-m-Y à H:i:s') : '' }}</li>{% endif %}
         <li>Prix: {{ annonce.prix}} euros</li>
     </ul>
 
