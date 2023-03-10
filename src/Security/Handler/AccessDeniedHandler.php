@@ -12,6 +12,10 @@ class AccessDeniedHandler extends AbstractController implements AccessDeniedHand
 {
     public function handle(Request $request, AccessDeniedException $accessDeniedException): ?Response
     {
+        $this->addFlash(
+            'accessdenied',
+            'Vous n\'avez pas les droits pour modifier cette annonce.'
+        );
         $content = $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
         ]);
